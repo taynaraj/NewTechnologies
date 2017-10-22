@@ -35,15 +35,65 @@
      
       angular.module("estudosApp",[])
       .controller('MeuTerceiroController',function($rootScope,$scope,$http){
-        $rootScope.titulo = "Estudos";
-       
-       
-        $scope.nomeListaPessoas='Lista de Buscas';
-        $scope.listaBuscas =[];
+         $rootScope.titulo = "Estudos";
+        $scope.frmInclusao = {
+                  "name" :"",
+                  "idade":"",
+                  "pais":""
+        };
+        $scope.nomeListaPessoas="Lista de Pessoas";
+        $scope.listaPessoas =[];
+        $scope.pessoa1={
+          "nome":"Taynara",
+          "idade": 31,
+          "pais":"Brasil"
+        };
+        $scope.pessoa2={
+          "nome":"Rodrigo",
+          "idade": 31,
+          "pais":"Brasil"
+        };
+        $scope.listaPessoas.push($scope.pessoa1);     
+        $scope.listaPessoas.push($scope.pessoa2);
 
-        $scope.carregarBusca = function(){
-          
+        $scope.exibirFormularioInclusao = false;
+          $scope.incluirPessoa = function(){
+            $scope.listaPessoas.push({
+                                      nome: $scope.frmInclusao.nome,
+                                      idade: $scope.frmInclusao.idade,
+                                      pais: $scope.frmInclusao.pais
+                                    });
+            $scope.frmInclusao = {
+                  "name" :"",
+                  "idade":"",
+                  "pais":""
+             };
+             $scope.exibirFormularioInclusao = false;
+        
         }
+        $scope.excluirPessoa = function(sNome) {
+
+          var listaPessoasNova = $scope.listaPessoas.filter(
+                                      function(pessoa){
+                                        return pessoa.nome != sNome;
+                                    });
+        
+        $scope.listaPessoas=listaPessoasNova;
+        }
+        $scope.carregarPessoas = function(){
+            $scope.carregandoPessoas = true;
+            $http({
+              url: 'pessoas.json',
+              method:'GET'
+            }).then(function(resposta){
+                console.log(resposta);
+                $scope.listaPessoas = resposta.data;
+           },function(resposta){
+            alert('Algum erro aconteceu');
+           }).finally(function(){
+              $scope.carregandoPessoas = false;
+           })
+          }
 
       });
     </script>    
@@ -57,18 +107,13 @@
     <div class="jumbotron">
       <h1>{{titulo}}</h1>
       
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="input-group">
-            
-            <input type="text" class="form-control" placeholder="Search for...">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button">Go!</button>
-            </span>
-          </div><!-- /input-group -->
-        </div><!-- /.col-lg-6 -->
-        
-      </div><!-- /.row -->
+      <p>
+
+        <a class="btn btn-primary btn-lg" ng-click="exibirFormularioInclusao = true;" ng-hide="exibirFormularioInclusao" href="#" role="button">Incluir Pessoa</a>
+        </p>
+        <p>
+        <a class="btn btn-primary btn-lg" ng-disabled="carregandoPessoas" ng-click="carregarPessoas()" href="#"  role="button">Carregar Pessoas</a>
+      </p>
     </div>
     <div class="panel panel-default" ng-show="exibirFormularioInclusao">
       <div class="panel-heading">Inclusão de Pessoas</div>
