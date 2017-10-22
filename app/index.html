@@ -1,0 +1,180 @@
+<!doctype html>
+<html ng-app="estudosApp">
+  <head>
+    <meta charset="utf-8">
+    <title>{{titulo}}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+   
+    <link rel="stylesheet" href="styles/main.css">
+   
+     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" >
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/about.js"></script>
+        <!-- endbuild -->
+    <script type="text/javascript">
+     
+      angular.module("estudosApp",[])
+      .controller('MeuTerceiroController',function($rootScope,$scope,$http){
+         $rootScope.titulo = "Estudos";
+        $scope.frmInclusao = {
+                  "name" :"",
+                  "idade":"",
+                  "pais":""
+        };
+        $scope.nomeListaPessoas="Lista de Pessoas";
+        $scope.listaPessoas =[];
+        $scope.pessoa1={
+          "nome":"Taynara",
+          "idade": 31,
+          "pais":"Brasil"
+        };
+        $scope.pessoa2={
+          "nome":"Rodrigo",
+          "idade": 31,
+          "pais":"Brasil"
+        };
+        $scope.listaPessoas.push($scope.pessoa1);     
+        $scope.listaPessoas.push($scope.pessoa2);
+
+        $scope.exibirFormularioInclusao = false;
+          $scope.incluirPessoa = function(){
+            $scope.listaPessoas.push({
+                                      nome: $scope.frmInclusao.nome,
+                                      idade: $scope.frmInclusao.idade,
+                                      pais: $scope.frmInclusao.pais
+                                    });
+            $scope.frmInclusao = {
+                  "name" :"",
+                  "idade":"",
+                  "pais":""
+             };
+             $scope.exibirFormularioInclusao = false;
+        
+        }
+        $scope.excluirPessoa = function(sNome) {
+
+          var listaPessoasNova = $scope.listaPessoas.filter(
+                                      function(pessoa){
+                                        return pessoa.nome != sNome;
+                                    });
+        
+        $scope.listaPessoas=listaPessoasNova;
+        }
+        $scope.carregarPessoas = function(){
+            $scope.carregandoPessoas = true;
+            $http({
+              url: 'pessoas.json',
+              method:'GET'
+            }).then(function(resposta){
+                console.log(resposta);
+                $scope.listaPessoas = resposta.data;
+           },function(resposta){
+            alert('Algum erro aconteceu');
+           }).finally(function(){
+              $scope.carregandoPessoas = false;
+           })
+          }
+
+      });
+    </script>    
+    <!-- endbuild -->
+  </head>
+  <body ng-controller="MeuTerceiroController">
+  
+
+    <div class="container">
+  
+    <div class="jumbotron">
+      <h1>{{titulo}}</h1>
+      
+      <p>
+
+        <a class="btn btn-primary btn-lg" ng-click="exibirFormularioInclusao = true;" ng-hide="exibirFormularioInclusao" href="#" role="button">Incluir Pessoa</a>
+        </p>
+        <p>
+        <a class="btn btn-primary btn-lg" ng-disabled="carregandoPessoas" ng-click="carregarPessoas()" href="#"  role="button">Carregar Pessoas</a>
+      </p>
+    </div>
+    <div class="panel panel-default" ng-show="exibirFormularioInclusao">
+      <div class="panel-heading">Inclusão de Pessoas</div>
+      <div class="panel-body">
+        <div class="form-group">
+          <label>Nome</label>
+          <input type="text" class="form-control" ng-model="frmInclusao.nome" />
+         </div> 
+         <div class="form-group">
+          <label>Idade</label>
+          <input type="text" class="form-control" ng-model="frmInclusao.idade" />
+         </div> 
+         <div class="form-group">
+          <label>País</label>
+          <input type="text" class="form-control" ng-model="frmInclusao.pais" />
+         </div> 
+          <div class="form-group">
+          <button class="btn btn-default" ng-click="incluirPessoa();">Incluir Pessoa</button>
+         </div> 
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">{{nomeListaPessoas}}</div>
+      <div class="panel-body">
+        <ul>
+          <li ng-repeat="pessoa in listaPessoas">
+              <div class="panel panel-default">
+                <div class="panel-heading">{{pessoa.nome}}</div>
+          <div class="panel-body">
+            <ul>
+         <li>
+                             
+                Idade: {{pessoa.idade}}            
+                
+              </li>
+              <li>País: {{pessoa.pais}}</li>
+        </ul>
+        <button class="btn btn-default" ng-click="excluirPessoa(pessoa.nome);">Excluir</button>
+      </div>
+    </div>
+              
+
+          </li>
+        </ul>
+      </div>
+    </div>  
+ 
+
+    
+
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+     <script>
+       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
+       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
+       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
+       }(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
+
+</body>
+</html>
