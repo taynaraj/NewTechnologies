@@ -34,22 +34,33 @@
     <script type="text/javascript">
      
       angular.module("estudosApp",[])
-      .controller('MeuTerceiroController',function($rootScope,$scope,$http){
+      .controller('MeuController',function($rootScope,$scope,$http){
         $rootScope.titulo = "Estudos";
        
-       
-        $scope.nomeListaPessoas='Lista de Buscas';
+        $scope.termoBusca = 'Brasil';
+        $scope.nomeLista='Lista de Buscas';
+
         $scope.listaBuscas =[];
 
         $scope.carregarBusca = function(){
+          $http.jsonp('https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages%7Cextracts&format=json&piprop=thumbnail%7Cname%7Coriginal&exintro=&explaintext=&redirects=yes&titles='+ $scope.termoBusca)
+          .then(function(resposta){
+              var pages = resposta.data.query.pages;
+              var nomePropriedade = Object.keys(pages)[0];
+
+              $scope.listaBuscas.push(pages[nomePropriedade]);
+              console.log(pages[nomePropriedade]);
           
+              //Object.keys(pages)[0];
+              console.log(nomePropriedade);
+          })
         }
 
-      });
+      }).config(function($sceProvider) {$sceProvider.enabled(false);});
     </script>    
     <!-- endbuild -->
   </head>
-  <body ng-controller="MeuTerceiroController">
+  <body ng-controller="MeuController">
   
 
     <div class="container">
@@ -61,53 +72,27 @@
         <div class="col-lg-6">
           <div class="input-group">
             
-            <input type="text" class="form-control" placeholder="Search for...">
+            <input type="text" class="form-control" ng-model="termoBusca" placeholder="Search for...">
             <span class="input-group-btn">
-              <button class="btn btn-default" type="button">Go!</button>
+              <button class="btn btn-default" ng-click="carregarBusca()" type="button">Buscar</button>
             </span>
           </div><!-- /input-group -->
         </div><!-- /.col-lg-6 -->
         
       </div><!-- /.row -->
     </div>
-    <div class="panel panel-default" ng-show="exibirFormularioInclusao">
-      <div class="panel-heading">Inclusão de Pessoas</div>
-      <div class="panel-body">
-        <div class="form-group">
-          <label>Nome</label>
-          <input type="text" class="form-control" ng-model="frmInclusao.nome" />
-         </div> 
-         <div class="form-group">
-          <label>Idade</label>
-          <input type="text" class="form-control" ng-model="frmInclusao.idade" />
-         </div> 
-         <div class="form-group">
-          <label>País</label>
-          <input type="text" class="form-control" ng-model="frmInclusao.pais" />
-         </div> 
-          <div class="form-group">
-          <button class="btn btn-default" ng-click="incluirPessoa();">Incluir Pessoa</button>
-         </div> 
-      </div>
-    </div>
+    
     <div class="panel panel-default">
-      <div class="panel-heading">{{nomeListaPessoas}}</div>
+      <div class="panel-heading">{{nomeLista}}</div>
       <div class="panel-body">
         <ul>
-          <li ng-repeat="pessoa in listaPessoas">
+          <li ng-repeat="busca in listaBuscas">
               <div class="panel panel-default">
-                <div class="panel-heading">{{pessoa.nome}}</div>
+                <div class="panel-heading">{{busca.title}}</div>
           <div class="panel-body">
-            <ul>
-         <li>
-                             
-                Idade: {{pessoa.idade}}            
-                
-              </li>
-              <li>País: {{pessoa.pais}}</li>
-        </ul>
-        <button class="btn btn-default" ng-click="excluirPessoa(pessoa.nome);">Excluir</button>
-      </div>
+            <div><img ng-src="{{busca.original.source}}" width="50%" /></div>
+            <div>{{busca.extract}}</div>
+          </div>
     </div>
               
 
