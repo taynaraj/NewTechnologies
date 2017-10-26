@@ -1,0 +1,120 @@
+<!doctype html>
+<html ng-app="estudosApp">
+  <head>
+    <meta charset="utf-8">
+    <title>{{titulo}}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+   
+    <link rel="stylesheet" href="styles/main.css">
+   
+     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" >
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-touch/angular-touch.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/app.js"></script>
+        <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/about.js"></script>
+        <!-- endbuild -->
+    <script type="text/javascript">
+     
+      angular.module("estudosApp",[])
+      .controller('MeuController',function($rootScope,$scope,$http){
+        $rootScope.titulo = "Estudos";
+       
+        $scope.termoBusca = 'Brasil';
+        $scope.nomeLista='Lista de Buscas';
+
+        $scope.listaBuscas =[];
+
+        $scope.carregarBusca = function(){
+          $http.jsonp('https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages%7Cextracts&format=json&piprop=thumbnail%7Cname%7Coriginal&exintro=&explaintext=&redirects=yes&titles='+ $scope.termoBusca)
+          .then(function(resposta){
+              var pages = resposta.data.query.pages;
+              var nomePropriedade = Object.keys(pages)[0];
+
+              $scope.listaBuscas.push(pages[nomePropriedade]);
+              console.log(pages[nomePropriedade]);
+          
+              //Object.keys(pages)[0];
+              console.log(nomePropriedade);
+          })
+        }
+
+      }).config(function($sceProvider) {$sceProvider.enabled(false);});
+    </script>    
+    <!-- endbuild -->
+  </head>
+  <body ng-controller="MeuController">
+  
+
+    <div class="container">
+  
+    <div class="jumbotron">
+      <h1>{{titulo}}</h1>
+      
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="input-group">
+            
+            <input type="text" class="form-control" ng-model="termoBusca" placeholder="Search for...">
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="carregarBusca()" type="button">Buscar</button>
+            </span>
+          </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+        
+      </div><!-- /.row -->
+    </div>
+    
+    <div class="panel panel-default">
+      <div class="panel-heading">{{nomeLista}}</div>
+      <div class="panel-body">
+        <ul>
+          <li ng-repeat="busca in listaBuscas">
+              <div class="panel panel-default">
+                <div class="panel-heading">{{busca.title}}</div>
+          <div class="panel-body">
+            <div><img ng-src="{{busca.original.source}}" width="50%" /></div>
+            <div>{{busca.extract}}</div>
+          </div>
+    </div>
+              
+
+          </li>
+        </ul>
+      </div>
+    </div>  
+ 
+
+    
+
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+     <script>
+       !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
+       (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
+       r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
+       }(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
+
+</body>
+</html>
