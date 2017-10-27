@@ -38,23 +38,31 @@
         $rootScope.nome = "Taynara";
       })
 
-      .controller('MeuController',function($rootScope,$scope,$http){
-        $scope.titulo = 'Painel';
-        $scope.mudarTitulo= function()
+      .controller('MeuController',function($rootScope,$http){
+        var ctrl = this;
+        ctrl.titulo = 'Painel';
+
+
+        ctrl.mudarTitulo= function(sNome)
         {
-          $scope.titulo = Math.random(Math.random() * 0.10000,0);
-          $scope.nome = $scope.titulo;
+          if(sNome){
+            ctrl.titulo = sNome;
+          }
+          else{
+            ctrl.titulo = Math.random(Math.random() * 0.10000,0);
+          }
+          ctrl.nome = $scope.titulo;
         }
         
 
       })
-      .controller('ListaController',function($rootScope,$scope,$http){
-        $scope.titulo = 'Lista';
-        $scope.listaNome = ['Roger', 'Eduardo', 'João'];
-        $scope.mudarTitulo= function(sNome)
-        {
-          $scope.titulo = sNome
-        }
+      .controller('ListaController',function($rootScope,$http){
+        
+        var ctrl = this;
+        ctrl.titulo = 'Lista';
+
+        ctrl.listanome = ['Roger', 'Eduardo', 'João'];
+    
 
       });
     </script>    
@@ -73,17 +81,17 @@
       </div><!-- /.row -->
     </div>
     
-    <div class="panel panel-default" ng-controller="MeuController">
-      <div class="panel-heading">{{titulo}}</div>
+    <div class="panel panel-default" ng-controller="MeuController as pc1">
+      <div class="panel-heading">{{pc1.titulo}}</div>
       <div class="panel-body">
-        <button class="btn btn-primary" ng-click="mudarTitulo();">
+        <button class="btn btn-primary" ng-click="pc1.mudarTitulo();">
       Novo Título
     </button>
-     <div class="panel panel-default" ng-controller="ListaController">
-      <div class="panel-heading">{{titulo}}</div>
+     <div class="panel panel-default" ng-controller="ListaController as lc1">
+      <div class="panel-heading">{{lc1.titulo}}</div>
       <div class="panel-body">
         <ul>
-          <li  ng-repeat="nome in listaNome" ng-click="mudarTitulo(nome);">
+          <li  ng-repeat="nome in lc1.listanome" ng-click="lc1.mudarTitulo(nome);">
             {{nome}}
           </li>
         </ul>
@@ -92,10 +100,10 @@
     </div> 
       </div>
     </div>  
-     <div class="panel panel-default" ng-controller="MeuController">
-      <div class="panel-heading">{{titulo}}</div>
+     <div class="panel panel-default" ng-controller="MeuController as pc2">
+      <div class="panel-heading">{{pc2.titulo}}</div>
       <div class="panel-body">
-        <button class="btn btn-primary" ng-click="mudarTitulo();">
+        <button class="btn btn-primary" ng-click="pc2.mudarTitulo();">
       Novo Título
     </button>
       </div>
